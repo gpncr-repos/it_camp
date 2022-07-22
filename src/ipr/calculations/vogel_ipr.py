@@ -73,3 +73,12 @@ def calc_q_fluid(p_wf: float, pi: float, p_res: float, wct: float,
                                                    ((0.001 * qo_max) /
                                                     (qo_max - qb)))**0.5)
     return (p_wfg - p_wf) / (cd / cg) + qo_max
+
+
+if __name__ == '__main__':
+    import json
+
+    with open("../../../contracts/ipr_in.json") as f:
+        data = json.load(f)
+    results = calc_ipr(**data)
+    print(results)
