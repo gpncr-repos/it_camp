@@ -1,3 +1,5 @@
+from typing import List
+
 from pydantic import BaseModel, Field, confloat, validator
 
 
@@ -19,8 +21,8 @@ class IprCalcRequest(BaseModel):
 
 
 class IprCalcResponse(BaseModel):
-    q_liq: list[confloat(ge=0)] = Field(title="Дебиты жидкости, м3/сут")
-    p_wf: list[confloat(gt=0)] = Field(title="Забойные давления, атм")
+    q_liq: List[confloat(ge=0)] = Field(title="Дебиты жидкости, м3/сут")
+    p_wf: List[confloat(gt=0)] = Field(title="Забойные давления, атм")
 
     @validator("q_liq", "p_wf")
     def round_result(cls, v):

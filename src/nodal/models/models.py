@@ -4,8 +4,8 @@ from pydantic import BaseModel, Field, confloat, validator
 
 
 class VlpIprCalcResponse(BaseModel):
-    q_liq: list[confloat(ge=0)] = Field(title="Дебиты жидкости, м3/сут")
-    p_wf: list[confloat(gt=0)] = Field(title="Забойные давления, атм")
+    q_liq: List[confloat(ge=0)] = Field(title="Дебиты жидкости, м3/сут")
+    p_wf: List[confloat(gt=0)] = Field(title="Забойные давления, атм")
 
 
 class NodalCalcRequest(BaseModel):

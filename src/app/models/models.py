@@ -1,3 +1,5 @@
+from typing import List
+
 from pydantic import BaseModel, Field, confloat, conlist, validator
 
 
@@ -12,7 +14,7 @@ class Inclinometry(BaseModel):
     MD: conlist(
         unique_items=True,
         item_type=float) = Field(title="Измеренная по стволу глубина, м")
-    TVD: list[float] = Field(title="Вертикальная глубина, м")
+    TVD: List[float] = Field(title="Вертикальная глубина, м")
 
 
 class Pipeline(BaseModel):
@@ -43,8 +45,8 @@ class VlpCalcRequest(BaseModel):
 
 
 class VlpIprCalcResponse(BaseModel):
-    q_liq: list[float] = Field(title="Дебиты жидкости, м3/сут")
-    p_wf: list[float] = Field(title="Забойное давление, атм")
+    q_liq: List[float] = Field(title="Дебиты жидкости, м3/сут")
+    p_wf: List[float] = Field(title="Забойное давление, атм")
 
     @validator("q_liq", "p_wf")
     def round_result(cls, v):
@@ -104,7 +106,7 @@ class NodalCalcResponse(BaseModel):
 class WellModelCalcResponse(BaseModel):
     ipr: VlpIprCalcResponse = Field(title="IPR")
     vlp: VlpIprCalcResponse = Field(title="VLP")
-    nodal: list[NodalCalcResponse] = Field(title="Рабочие режимы скважины")
+    nodal: List[NodalCalcResponse] = Field(title="Рабочие режимы скважины")
 
     class Config:
         schema_extra = {
