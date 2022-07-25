@@ -6,14 +6,8 @@ def _calc_oil_density(gamma_oil, rs, gamma_gas, bo):
 
 
 def _calc_bo(rs, gamma_gas, gamma_oil, t):
-    return 0.972 + 0.000147 * (
-            (
-                    5.614583333333334 * rs * ((gamma_gas / gamma_oil) ** 0.5)
-                    + 2.25 * t
-                    - 574.5875
-            )
-            ** 1.175
-    )
+    return 0.972 + 0.000147 * ((5.614583333333334 * rs * (
+        (gamma_gas / gamma_oil)**0.5) + 2.25 * t - 574.5875)**1.175)
 
 
 def _calc_bg(p, t, z):
@@ -23,7 +17,7 @@ def _calc_bg(p, t, z):
 
 def _calc_rs(gamma_gas, gamma_oil, t, p):
     yg = 1.2254503 + 0.001638 * t - 1.76875 / gamma_oil
-    rs = gamma_gas * (1.9243101395421235e-06 * p / 10 ** yg) ** 1.2048192771084338
+    rs = gamma_gas * (1.9243101395421235e-06 * p / 10**yg)**1.2048192771084338
     return rs
 
 
@@ -36,10 +30,6 @@ def _calc_rho_mix(rho_oil, rho_gas, rho_wat, wct, gas_fraction):
     rho_liq = rho_oil * (1 - wct) + rho_wat * wct
     rho_mix = rho_liq * (1 - gas_fraction) + gas_fraction * rho_gas
     return rho_mix
-
-
-def _calc_vsm(p, t):
-    pass
 
 
 def _calc_qg(q_fluid, wct, rp, rs, bg):
@@ -86,22 +76,19 @@ def _oil_deadviscosity_beggs(gamma_oil, t):
     if t < 70:
         # Корректировка вязкости дегазированной нефти для температуры ниже 70 F
         # Расчет вязкости дегазированной нефти для 70 F
-        oil_deadviscosity_beggs_70 = (
-                                             10 ** ((10 ** (3.0324 - 0.02023 * gamma_oil)) * (70 ** (-1.163)))
-                                     ) - 1
+        oil_deadviscosity_beggs_70 = (10**(
+            (10**(3.0324 - 0.02023 * gamma_oil)) * (70**(-1.163)))) - 1
         # Расчет вязкости дегазированной нефти для 80 F
-        oil_deadviscosity_beggs_80 = (
-                                             10 ** ((10 ** (3.0324 - 0.02023 * gamma_oil)) * (80 ** (-1.163)))
-                                     ) - 1
+        oil_deadviscosity_beggs_80 = (10**(
+            (10**(3.0324 - 0.02023 * gamma_oil)) * (80**(-1.163)))) - 1
         # Экстраполяция вязкости дегазированной нефти по двум точкам
-        c = mt.log10(
-            oil_deadviscosity_beggs_70 / oil_deadviscosity_beggs_80
-        ) / mt.log10(80 / 70)
-        b = oil_deadviscosity_beggs_70 * 70 ** c
-        oil_deadviscosity_beggs = 10 ** (mt.log10(b) - c * mt.log10(t))
+        c = mt.log10(oil_deadviscosity_beggs_70 /
+                     oil_deadviscosity_beggs_80) / mt.log10(80 / 70)
+        b = oil_deadviscosity_beggs_70 * 70**c
+        oil_deadviscosity_beggs = 10**(mt.log10(b) - c * mt.log10(t))
     else:
-        x = (10 ** (3.0324 - 0.02023 * gamma_oil)) * (t ** (-1.163))
-        oil_deadviscosity_beggs = (10 ** x) - 1
+        x = (10**(3.0324 - 0.02023 * gamma_oil)) * (t**(-1.163))
+        oil_deadviscosity_beggs = (10**x) - 1
     return oil_deadviscosity_beggs
 
 
@@ -118,9 +105,9 @@ def _oil_liveviscosity_beggs(oil_deadvisc, rs):
     # Конвертация газосодержания в куб. футы/баррель
     rs_new = rs / 0.17810760667903522
 
-    a = 10.715 * (rs_new + 100) ** (-0.515)
-    b = 5.44 * (rs_new + 150) ** (-0.338)
-    oil_liveviscosity_beggs = a * oil_deadvisc ** b
+    a = 10.715 * (rs_new + 100)**(-0.515)
+    b = 5.44 * (rs_new + 150)**(-0.338)
+    oil_liveviscosity_beggs = a * oil_deadvisc**b
     return oil_liveviscosity_beggs
 
 
@@ -138,10 +125,11 @@ def _gas_viscosity_lee(t: float, gamma_gas: float, rho_gas: float) -> float:
     """
     t_r = t * 1.8
 
-    a = (7.77 + 0.183 * gamma_gas) * t_r ** 1.5 / (122.4 + 373.6 * gamma_gas + t_r)
+    a = (7.77 + 0.183 * gamma_gas) * t_r**1.5 / (122.4 + 373.6 * gamma_gas +
+                                                 t_r)
     b = 2.57 + 1914.5 / t_r + 0.275 * gamma_gas
     c = 1.11 + 0.04 * b
-    gas_viscosity = 10 ** (-4) * a * mt.exp(b * (rho_gas / 1000) ** c)
+    gas_viscosity = 10**(-4) * a * mt.exp(b * (rho_gas / 1000)**c)
     return gas_viscosity
 
 
