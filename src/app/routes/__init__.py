@@ -2,10 +2,10 @@ from fastapi import APIRouter
 
 from src.app.models.models import WellModelCalcRequest, WellModelCalcResponse
 
-main_router = APIRouter(prefix="/wellmodel", tags=["WellModel"])
+main_router = APIRouter(prefix="/well_model", tags=["WellModel"])
 
 
-@main_router.post("/calc", response_model=WellModelCalcResponse)
+@main_router.put("/calc", response_model=WellModelCalcResponse)
 async def my_profile(data: WellModelCalcRequest):
     result = WellModelCalcResponse.parse_obj({
         "vlp": {
