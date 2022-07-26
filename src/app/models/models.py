@@ -94,7 +94,7 @@ class WellModelCalcRequest(VlpCalcRequest):
         }
 
 
-class NodalCalcResponse(BaseModel):
+class NodalCalcDecision(BaseModel):
     p_wf: confloat(gt=0) = Field(title="Забойное давление, атм")
     q_liq: confloat(ge=0) = Field(title="Дебит жидкости, м3/сут")
 
@@ -103,10 +103,17 @@ class NodalCalcResponse(BaseModel):
         return round(v, 2)
 
 
-class WellModelCalcResponse(BaseModel):
+class NodalCalcResponse(BaseModel):
+    __root__: List[NodalCalcDecision]
+
+
+class NodalCalcRequest(BaseModel):
     ipr: VlpIprCalcResponse = Field(title="IPR")
     vlp: VlpIprCalcResponse = Field(title="VLP")
-    nodal: List[NodalCalcResponse] = Field(title="Рабочие режимы скважины")
+
+
+class WellModelCalcResponse(NodalCalcRequest):
+    nodal: NodalCalcResponse = Field(title="Рабочие режимы скважины")
 
     class Config:
         schema_extra = {

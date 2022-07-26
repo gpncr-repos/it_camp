@@ -143,6 +143,7 @@ def _calc_mum(mul, mug, gf):
 
 def calc_pvt(p, t, gamma_gas, gamma_oil, gamma_wat, wct, rp, q_fluid):
     q_fluid /= 86400
+    rp *= gamma_oil
     rs = _calc_rs(gamma_gas, gamma_oil, p, t)
     bo = _calc_bo(rs, gamma_gas, gamma_oil, t)
     rho_oil = _calc_oil_density(gamma_oil, rs, gamma_gas, bo)

@@ -1,7 +1,10 @@
 import uvicorn
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 import src.app.routes as rts
+
+origins = ["http://localhost:3000"]
 
 app = FastAPI(
     title="IT Camp Тестовое Приложение",
@@ -11,6 +14,12 @@ app = FastAPI(
         "url": "https://unlicense.org",
     },
 )
+
+app.add_middleware(CORSMiddleware,
+                   allow_origins=origins,
+                   allow_credentials=True,
+                   allow_methods=["*"],
+                   allow_headers=["*"])
 
 app.include_router(rts.main_router)
 
