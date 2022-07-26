@@ -1,4 +1,4 @@
-from src.vlp.calculations.pipe import calc_pipe, incl_func
+from calculations.pipe import calc_pipe, incl_func
 
 
 def _convert_temperature(t, current, aim):
@@ -21,13 +21,8 @@ def _convert_pressure(p, current, aim):
     return p
 
 
-def calc_pwf(inclinometry: dict,
-             casing: dict,
-             tubing: dict,
-             pvt: dict,
-             p_wh: float,
-             geo_grad: float,
-             h_res: float,
+def calc_pwf(inclinometry: dict, casing: dict, tubing: dict, pvt: dict,
+             p_wh: float, geo_grad: float, h_res: float,
              q_liq: float) -> float:
     """
     Расчёт забойного давления в скважине
@@ -50,9 +45,11 @@ def calc_pwf(inclinometry: dict,
 
     # Расчёт давления на приеме (конце НКТ)
     p_in = calc_pipe(tubing["d"], 0, tubing["h_mes"], incl, geo_grad, pvt,
-                     p_wh, incl(h_res).item(), q_liq)
+                     p_wh,
+                     incl(h_res).item(), q_liq)
 
     # Расчёт забойного давления
-    p_wf = calc_pipe(casing["d"], tubing["h_mes"], h_res, incl, geo_grad,
-                     pvt, p_in, incl(h_res).item(), q_liq)
+    p_wf = calc_pipe(casing["d"], tubing["h_mes"], h_res, incl, geo_grad, pvt,
+                     p_in,
+                     incl(h_res).item(), q_liq)
     return _convert_pressure(p_wf, 'pa', 'atm')

@@ -1,7 +1,6 @@
+from calculations.vogel_ipr import calc_ipr
 from fastapi import APIRouter
-
-from ipr.calculations.vogel_ipr import calc_ipr
-from ipr.models.models import IprCalcRequest, IprCalcResponse
+from models.models import IprCalcRequest, IprCalcResponse
 
 main_router = APIRouter(prefix="/ipr", tags=["IPR"])
 

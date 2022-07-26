@@ -2,10 +2,9 @@ import math as mt
 from functools import lru_cache
 
 import numpy as np
+from calculations.pvt import calc_pvt
 from scipy.integrate import solve_ivp
 from scipy.interpolate import interp1d
-
-from src.vlp.calculations.pvt import calc_pvt
 
 
 def calc_pipe(d, h0, h1, incl, temp_grad, pvt, p_in, tvd_res, qliq):
@@ -24,19 +23,16 @@ def calc_pipe(d, h0, h1, incl, temp_grad, pvt, p_in, tvd_res, qliq):
     """
     tvd_cur = incl(h0).item()
 
-    result = solve_ivp(_calc_grad,
-                       t_span=(h0, h1),
-                       y0=[p_in, temp_func(temp_grad, pvt["t_res"], tvd_res, tvd_cur)],
-                       method="RK23",
-                       args=(d, temp_grad, pvt, incl, qliq))
+    result = solve_ivp(
+        _calc_grad,
+        t_span=(h0, h1),
+        y0=[p_in, temp_func(temp_grad, pvt["t_res"], tvd_res, tvd_cur)],
+        method="RK23",
+        args=(d, temp_grad, pvt, incl, qliq))
     return result.y[0][-1]
 
 
-def _calc_sin_angle(
-        incl,
-        md1: float,
-        md2: float
-) -> float:
+def _calc_sin_angle(incl, md1: float, md2: float) -> float:
     """
     Расчет синуса угла с горизонталью по интерполяционной функции скважины
     Parameters
@@ -45,18 +41,11 @@ def _calc_sin_angle(
     :param md2: measured depth 2, м
     :return: синус угла к горизонтали
     """
-    return (
-        0
-        if md2 == md1
-        else min((incl(md2).item() - incl(md1).item()) / (md2 - md1), 1)
-    )
+    return (0 if md2 == md1 else min(
+        (incl(md2).item() - incl(md1).item()) / (md2 - md1), 1))
 
 
-def _calc_angle(
-        incl,
-        md1: float,
-        md2: float
-) -> float:
+def _calc_angle(incl, md1: float, md2: float) -> float:
     """
     Расчет угла по интерполяционной функции траектории по MD
     Parameters
@@ -65,11 +54,9 @@ def _calc_angle(
     :param md2: measured depth 2, м
     :return: угол к горизонтали, град
     """
-    return (
-        np.degrees(np.arcsin(_calc_sin_angle(incl, md1, md1 + 0.001)))
-        if md2 == md1
-        else np.degrees(np.arcsin(_calc_sin_angle(incl, md1, md2)))
-    )
+    return (np.degrees(np.arcsin(_calc_sin_angle(incl, md1, md1 +
+                                                 0.001))) if md2 == md1 else
+            np.degrees(np.arcsin(_calc_sin_angle(incl, md1, md2))))
 
 
 def _grav_gradient(rho_mix, theta_deg):
@@ -77,23 +64,18 @@ def _grav_gradient(rho_mix, theta_deg):
 
 
 def _fric_gradient(ff, rho_mix, vsm, d):
-    return ff * rho_mix * vsm ** 2 / (2 * d)
+    return ff * rho_mix * vsm**2 / (2 * d)
 
 
 def _calc_vm(qm, d):
-    return qm / (mt.pi * d ** 2 / 4)
+    return qm / (mt.pi * d**2 / 4)
 
 
 def _calc_grad(h, pt, d, geotemp_grad, pvt, incl, qliq):
     angle = _calc_angle(incl, h, h - 0.0001)
 
-    qm, rhom, mum = calc_pvt(pt[0], pt[1],
-                             pvt["gamma_gas"],
-                             pvt["gamma_oil"],
-                             pvt["gamma_wat"],
-                             pvt["wct"],
-                             pvt["rp"],
-                             qliq)
+    qm, rhom, mum = calc_pvt(pt[0], pt[1], pvt["gamma_gas"], pvt["gamma_oil"],
+                             pvt["gamma_wat"], pvt["wct"], pvt["rp"], qliq)
     vsm = _calc_vm(qm, d)
     n_re = _calc_n_re(d, rhom, vsm, mum)
 
@@ -133,18 +115,13 @@ def _calc_ff(n_re, eps):
             n_re = 4000
 
         # расcчитываем турбулентный режим
-        f_n = (
-                      2
-                      * mt.log10(
-                  0.5405405405405405 * eps
-                  - 5.02 / n_re * mt.log10(0.5405405405405405 * eps + 13 / n_re)
-              )
-              ) ** -2
+        f_n = (2 *
+               mt.log10(0.5405405405405405 * eps - 5.02 / n_re *
+                        mt.log10(0.5405405405405405 * eps + 13 / n_re)))**-2
         i = 0
         while True:
-            f_n_new = (
-                              1.74 - 2 * mt.log10(2 * eps + 18.7 / (n_re * f_n ** 0.5))
-                      ) ** -2
+            f_n_new = (1.74 - 2 * mt.log10(2 * eps + 18.7 /
+                                           (n_re * f_n**0.5)))**-2
             i = i + 1
             error = abs(f_n_new - f_n) / f_n_new
             f_n = f_n_new
@@ -157,9 +134,8 @@ def _calc_ff(n_re, eps):
             max_re = 4000
             f_turb = f_n
             f_lam = 0.032
-            f_n = f_lam + (n_re_save - min_re) * (f_turb - f_lam) / (
-                    max_re - min_re
-            )
+            f_n = f_lam + (n_re_save - min_re) * (f_turb - f_lam) / (max_re -
+                                                                     min_re)
 
     return f_n
 
@@ -169,7 +145,9 @@ def incl_func(inclinometry_md: tuple, inclinometry_tvd: tuple):
     """
     Функция интерполяции инклинометрии
     """
-    return interp1d(inclinometry_md, inclinometry_tvd, fill_value='extrapolate')
+    return interp1d(inclinometry_md,
+                    inclinometry_tvd,
+                    fill_value='extrapolate')
 
 
 @lru_cache(maxsize=1024)

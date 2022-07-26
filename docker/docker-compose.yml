@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+  ipr:
+    container_name: ipr
+    image: ipr-it-camp
+    build:
+      context: ../
+      dockerfile: docker/ipr.Dockerfile
+    ports:
+      - "8002:8002"
+
+  vlp:
+    container_name: vlp
+    image: vlp-it-camp
+    build:
+      context: ../
+      dockerfile: docker/vlp.Dockerfile
+    ports:
+      - "8001:8001"
+
+  nodal:
+    container_name: nodal
+    image: nodal-it-camp
+    build:
+      context: ../
+      dockerfile: docker/nodal.Dockerfile
+    ports:
+      - "8003:8003"

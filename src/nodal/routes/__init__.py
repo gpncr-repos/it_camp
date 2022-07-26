@@ -1,7 +1,6 @@
+from calculations.nodal import calc_nodal
 from fastapi import APIRouter
-
-from nodal.calculations.nodal import calc_nodal
-from nodal.models.models import NodalCalcRequest, NodalCalcResponse
+from models.models import NodalCalcRequest, NodalCalcResponse
 
 main_router = APIRouter(prefix="/nodal", tags=["NodalAnalysis"])
 

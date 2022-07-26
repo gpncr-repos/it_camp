@@ -1,7 +1,6 @@
+from calculations.vlp import calc_vlp
 from fastapi import APIRouter
-
-from vlp.calculations.vlp import calc_vlp
-from vlp.models.models import VlpCalcRequest, VlpCalcResponse
+from models.models import VlpCalcRequest, VlpCalcResponse
 
 main_router = APIRouter(prefix="/vlp", tags=["VLP"])
 

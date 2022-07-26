@@ -1,6 +1,5 @@
 import numpy as np
-
-from src.vlp.calculations.well import calc_pwf
+from calculations.well import calc_pwf
 
 
 def calc_vlp(inclinometry: dict, casing: dict, tubing: dict, pvt: dict,
