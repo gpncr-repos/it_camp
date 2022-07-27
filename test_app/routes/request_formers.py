@@ -1,5 +1,5 @@
-from src.app.models.models import (PVT, IprCalcRequest, NodalCalcRequest,
-                                   VlpCalcRequest)
+from test_app.models.models import (PVT, IprCalcRequest, NodalCalcRequest,
+                                    VlpCalcRequest)
 
 
 def form_vlp_request(well_model_request):

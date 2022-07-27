@@ -1,8 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-import src.app.routes as rts
+import test_app.routes as rts
 
 origins = ["http://localhost:3000"]
 
