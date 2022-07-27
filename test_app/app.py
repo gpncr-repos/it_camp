@@ -1,9 +1,10 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 import test_app.routes as rts
 
-origins = ["http://localhost:3000"]
+origins = ["http://localhost:3000", "http://localhost:3002"]
 
 app = FastAPI(
     title="IT Camp Тестовое Приложение",
